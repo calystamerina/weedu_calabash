@@ -1,0 +1,19 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = https://Shokhib@bitbucket.org/kudoindonesia/kudo_mobile_app_ui_test.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	fetch = +refs/heads/automate-alpha-kma:refs/remotes/origin/automate-alpha-kma
+[branch "automate-alpha-kma"]
+	remote = origin
+	merge = refs/heads/automate-alpha-kma
+[pull]
+	rebase = true
+[gui]
+	wmstate = normal
+	geometry = 887x427+52+52 171 192
