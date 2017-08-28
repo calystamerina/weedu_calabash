@@ -1,0 +1,15 @@
+*.bat
+*.txt
+apk/*
+reports/*
+container/*
+screenshot*
+*.properties
+*irb-history
+screenshots/*
+test_servers/*
+gen-config.rb
+gen-chmod.rb
+*.calabash_settings
+features/support/hooks.rb
+*.keystore

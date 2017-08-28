@@ -1,0 +1,50 @@
+query "android.widget.EditText"
+exit
+reinstall_apps
+start_test_server_in_background
+exit
+reinstall_apps
+reinstall_apps
+start_test_server_in_background
+exit
+query "android.widget.CheckBox"
+reinstall_apps
+start_test_server_in_background
+query "android.widget.CheckBox"
+query "android.widget.TextView"
+query "android.widget.RadioButton"
+query "android.widget.RelativeLayout"
+query "android.widget.TextView"
+reinstall_apps
+start_test_server_in_background
+exit
+query "*"
+start_test_server_in_background
+query "*"
+query "android.widget.TextView"
+exit
+query "android.widget.Button"
+query "android.widget.Button"
+exit
+start_test_server_in_background
+start_test_server_in_background
+y
+exit
+reinstall_apps
+start_test_server_in_background
+exit
+reinstall_apps
+start_test_server_in_background
+exit
+reinstall_apps
+start_test_server_in_background
+exit
+reinstall_apps
+start_test_server_in_background
+start_test_server_in_background
+start_test_server_in_background
+start_test_server_in_background
+exit
+reinstall_apps
+start_test_server_in_background
+exit

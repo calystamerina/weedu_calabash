@@ -1,0 +1,285 @@
+<?xml version="1.0"?>
+   <project name="Kudo Calabash Android Builder" default="info">
+   <property file="build.properties" />
+
+   <target name="info" depends="date">
+      <echo>Hello - Welcome to Kudo</echo>
+   </target>
+
+   <target name="date">
+      <tstamp>
+         <format property="timestamp" pattern="${dateformat}" />
+      </tstamp>
+      <echo message="${timestamp}" />
+   </target>
+
+   <target name="datereport">
+      <tstamp>
+         <format property="time" pattern="${dateformatreport}" />
+      </tstamp>
+      <echo message="${time}" />
+   </target>
+
+   <target name="del-move">
+      <delete>
+         <fileset dir="apk" includes="*.apk"/>
+      </delete>
+      <move todir="apk">
+         <fileset dir="container">
+            <include name="*.apk"/>
+         </fileset>
+      </move>
+   </target>   
+
+   <target name="chmod-file">
+      <echo>Change 777 permission</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+        <arg value="echo 4gus1234* | sudo -S chmod 777 apk/*" />
+      </exec>
+   </target>
+
+   <target name="config">
+      <echo>Generate config setting</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="ruby gen-config.rb"/>
+      </exec>
+   </target>
+
+   <target name="build">
+      <echo>Build sctructure</echo>
+      <touch file="rundev_1.txt"/>
+      <touch file="rundev_2.txt"/>
+      <mkdir dir="log"/>
+      <mkdir dir="apk"/>
+      <mkdir dir="reports"/>
+      <mkdir dir="container"/>
+      <mkdir dir="screenshots"/>
+      <mkdir dir="screenshots/error"/>
+	  <mkdir dir="screenshots/register"/>
+      <mkdir dir="screenshots/login"/>
+      <mkdir dir="screenshots/guestmode"/>
+	  <mkdir dir="screenshots/online"/>
+      <mkdir dir="screenshots/pulsa"/>
+	  <mkdir dir="screenshots/tagihan"/>
+	  <mkdir dir="screenshots/asuransi"/>
+	  <mkdir dir="screenshots/tiket_kereta"/>
+	  <mkdir dir="screenshots/tiket_pesawat"/>
+	  <mkdir dir="screenshots/vouchergame"/>
+	  <mkdir dir="screenshots/grab"/>
+	  <mkdir dir="screenshots/agentmenu"/>
+	  <mkdir dir="screenshots/search"/>
+	  <mkdir dir="screenshots/others"/>
+   </target>
+
+   <target name="buildFolder" depends="info">
+      <mkdir dir="apkTest"/>
+   </target>
+
+   <target name="run-test-win" depends="date">
+      <echo>Generate Run in TestRail</echo>
+      <property name="version" value="1"/>
+      <exec executable="curl">
+         <arg line="
+                     -X POST 
+                     -H 'Content-Type: application/json' 
+                     -u 'benny@kudo.co.id:CIOAIsSnOgl6DjO42v12' 
+                     'https://kudoqa.testrail.net/index.php?/api/v2/add_run/14'
+                  "/>
+         <arg value='-d {"\"suite_id\"": 1, \"name\": \"Automated_${apk_dir}_version_${version}_${timestamp}\",\"assignedto_id\": 1,\"include_all\": true}'/>
+      </exec>
+   </target>
+
+   <target name="run-test-linux" depends="date">
+      <echo>Generate Run in TestRail</echo>
+      <property name="version" value="1"/>
+      <exec executable="curl">
+         <arg line="
+                     -X POST 
+                     -H 'Content-Type: application/json' 
+                     -u 'benny@kudo.co.id:CIOAIsSnOgl6DjO42v12' 
+                     'https://kudoqa.testrail.net/index.php?/api/v2/add_run/14'
+                  "/>
+         <arg value='-d {"suite_id": 1, "name": "Automated_${apk_dir}_version_${version}_${timestamp}","assignedto_id": 1,"include_all": true}'/>
+      </exec>
+   </target>
+
+   <target name="run" depends="">
+      <echo>Running all device</echo>
+      <parallel>
+      <exec executable="${os}">
+            <arg value="${argos}"/>
+            <arg value="ant run-dev1"/>
+         </exec>
+         <sleep seconds="5"/>
+         <exec executable="${os}">
+            <arg value="${argos}"/>
+            <arg value="ant run-dev2"/>
+         </exec>
+      </parallel>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="ruby gen-notification.rb ${apk_dir}.apk"/>
+      </exec>
+   </target>
+
+   <target name="console">
+      <echo>Calabash console apk</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="start calabash-android console apk/${apk_dir}.apk"/>
+      </exec>
+   </target>
+
+   <target name="setup">
+      <echo>Calabash setup apk</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="calabash-android setup"/>
+      </exec>
+   </target>
+
+   <target name="resign" depends="config">
+      <echo>Calabash resign apk</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="calabash-android resign apk/${apk_dir}.apk"/>
+      </exec>
+   </target>
+
+   <target name="buildapk">
+      <echo>Calabash build apk</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="calabash-android build apk/${apk_dir}.apk"/>
+      </exec>
+   </target>
+
+   <target name="run-dev1" depends="datereport">
+      <echo>Running device 1 ${1_device}</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb connect ${1_device}"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${1_device} uninstall com.telkom.weedu"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${1_device} uninstall com.telkom.weedu"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${1_device} uninstall com.telkom.weedu"/>
+      </exec>
+      <sleep seconds="5"/>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${1_device} shell input keyevent 3"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="calabash-android run apk/${apk_dir}.apk  @${1_rundev} screenshot_path=${screenshots_error} -f rerun --out ${1_rerun} --format pretty -verbose --format html --out reports/${time}_${1_report_dev1}.html ADB_DEVICE_ARG=${1_device}"/>
+      </exec>
+   </target>
+
+   <target name="re-run-dev1" depends="datereport, config">
+      <echo>Re-Running device 1 ${1_device}</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb connect ${1_device}"/>
+      </exec>
+      <sleep seconds="5"/>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="ruby gen-login-feature.rb ${1_rerun}"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${1_device} uninstall com.telkom.weedu"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${1_device} uninstall com.telkom.weedu"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${1_device} uninstall com.telkom.weedu"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="calabash-android run apk/${apk_dir}.apk  @${1_rerun} screenshot_path=${screenshots_error} --format pretty -verbose --format html --out reports/${time}_${1_re_run_report_dev1}.html ADB_DEVICE_ARG=${1_device}"/>
+      </exec>
+   </target>
+
+   <target name="run-dev2" depends="datereport">
+      <sleep seconds="20"/>
+      <echo>Running device 2 ${2_device}</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb connect ${2_device}"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${2_device} uninstall kudo.mobile.app.test.test"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${2_device} uninstall kudo.mobile.app.test"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${2_device} uninstall kudo.mobile.app"/>
+      </exec>
+      <sleep seconds="5"/>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${2_device} shell input keyevent 3"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="calabash-android run apk/${apk_dir}.apk  @${2_rundev} screenshot_path=${screenshots_error} -f rerun --out ${2_rerun} --format pretty -verbose --format html --out reports/${time}_${2_report_dev2}.html ADB_DEVICE_ARG=${2_device}"/>
+      </exec>
+      <antcall target="re-run-dev2" />
+   </target>
+
+   <target name="re-run-dev2" depends="datereport, config">
+      <echo>Re-Running device 2 ${2_device}</echo>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb connect ${2_device}"/>
+      </exec>
+      <sleep seconds="5"/>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="ruby gen-login-feature.rb ${2_rerun}"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${2_device} uninstall kudo.mobile.app.test.test"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${2_device} uninstall kudo.mobile.app.test"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="adb -s ${2_device} uninstall kudo.mobile.app"/>
+      </exec>
+      <exec executable="${os}">
+         <arg value="${argos}"/>
+         <arg value="calabash-android run apk/${apk_dir}.apk  @${2_rerun} screenshot_path=${screenshots_error} --format pretty -verbose --format html --out reports/${time}_${2_re_run_report_dev2}.html ADB_DEVICE_ARG=${2_device}"/>
+      </exec>
+   </target>
+
+   <target name="clean" description="Clean output screenshots">
+      <echo>Clean output screenshots directory</echo>
+      <delete>
+         <fileset dir="screenshots">
+            <include name="**/*.png"/>
+         </fileset>
+      </delete>
+   </target>   
+</project>
